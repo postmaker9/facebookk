@@ -137,8 +137,6 @@
   .sw16{background:linear-gradient(90deg,#6a8fb0 0%,#6a8fb0 40%,#000 62%,#000 100%);}
   .sw17{background:linear-gradient(180deg,#7a6a52 0%,#3a3228 65%,#0d0d0d 100%);}
   .sw14{background:linear-gradient(180deg,#5b6f8c 0%,#2a3346 62%,#0d0f14 92%,#f5b800 92%);}
-  .sw18{background:linear-gradient(180deg,#8ea3bd 0%,#0a1a3c 62%,#0a1a3c 90%,#2d8cf0 90%);}
-  .sw19{background:linear-gradient(180deg,#7a8a9c 0%,#111 60%,#000 100%);border-bottom:6px solid #e53935;}
   canvas{ width:100%; height:100%; display:block; }
   .meta-row{ display:flex; justify-content:space-between; align-items:center; margin-top:10px; font-size:12px; color:var(--ink-soft); }
   .status-line{ font-size:11.5px; color:var(--ink-soft); margin-top:8px; min-height:16px; }
@@ -217,8 +215,6 @@
           <button class="tpl-btn" data-tpl="15"><span class="tpl-swatch sw15"></span>Flag Edge Caps</button>
           <button class="tpl-btn" data-tpl="16"><span class="tpl-swatch sw16"></span>Split Quote</button>
           <button class="tpl-btn" data-tpl="17"><span class="tpl-swatch sw17"></span>Condensed Center</button>
-          <button class="tpl-btn" data-tpl="18"><span class="tpl-swatch sw18"></span>Navy Fade Line</button>
-          <button class="tpl-btn" data-tpl="19"><span class="tpl-swatch sw19"></span>Tag + Poll Pills</button>
         </div>
       </div>
 
@@ -415,8 +411,8 @@ let state = {
   imgZoom: 1,
   imgPanX: 0,
   videoDuration: 6,
-  photoRatio: { '1':78, '2':58, '3':52, '4':62, '5':56, '6':62, '7':100, '8':68, '9':76, '10':100, '11':78, '12':100, '13':100, '14':100, '15':100, '16':100, '17':100, '18':100, '19':72 },
-  textOffset: { '1':0,'2':0,'3':0,'4':0,'5':0,'6':0,'7':0,'8':0,'9':0,'10':0,'11':0,'12':0,'13':0,'14':0,'15':0,'16':0,'17':0,'18':0,'19':0 }
+  photoRatio: { '1':78, '2':58, '3':52, '4':62, '5':56, '6':62, '7':100, '8':68, '9':76, '10':100, '11':78, '12':100, '13':100, '14':100, '15':100, '16':100, '17':100 },
+  textOffset: { '1':0,'2':0,'3':0,'4':0,'5':0,'6':0,'7':0,'8':0,'9':0,'10':0,'11':0,'12':0,'13':0,'14':0,'15':0,'16':0,'17':0 }
 };
 
 const FONTS = {
@@ -620,9 +616,7 @@ const tplDefaults = {
   '14': { tagHide:false, tagLabel:'Tag pill text (e.g. topic)', tagDefault:'NEWS UPDATE', buttonsHide:true, font:'archivoblack', headlineColor:'#ffffff', highlightColor:'#f5b800' },
   '15': { tagHide:true, buttonsHide:true, font:'archivoblack', headlineColor:'#ffffff', highlightColor:'#f5b800' },
   '16': { tagHide:false, tagLabel:'Quote author (small name under the quote)', tagDefault:'', buttonsHide:true, font:'playfair', headlineColor:'#ffffff', highlightColor:'#ffcf3f' },
-  '17': { tagHide:true, buttonsHide:true, font:'anton', headlineColor:'#ffffff', highlightColor:'#e8211f' },
-  '18': { tagHide:true, buttonsHide:true, font:'anton', headlineColor:'#ffffff', highlightColor:'#f5b800' },
-  '19': { tagHide:false, tagLabel:'Red tag text (e.g. page / topic)', tagDefault:'VOICE OF BRITISH', buttonsHide:false, font:'anton', headlineColor:'#ffffff', highlightColor:'#ffe600', btn1:'YES', btn2:'NO' }
+  '17': { tagHide:true, buttonsHide:true, font:'anton', headlineColor:'#ffffff', highlightColor:'#e8211f' }
 };
 
 function applyTplDefaults(t){
@@ -970,8 +964,6 @@ function draw(){
   else if(state.template === '15') drawTemplate15();
   else if(state.template === '16') drawTemplate16();
   else if(state.template === '17') drawTemplate17();
-  else if(state.template === '18') drawTemplate18();
-  else if(state.template === '19') drawTemplate19();
   else drawTemplate5();
 }
 
@@ -1594,99 +1586,6 @@ function drawTemplate17(){
   ctx.beginPath(); ctx.moveTo(W/2 - W*0.12, lineY); ctx.lineTo(W/2 + W*0.12, lineY); ctx.stroke();
 }
 
-// Template 18: Navy fade + centred caps headline + blue→orange gradient line
-function drawTemplate18(){
-  drawImageOrPlaceholder(H);
-  const g = ctx.createLinearGradient(0, H*0.45, 0, H);
-  g.addColorStop(0, 'rgba(8,18,44,0)');
-  g.addColorStop(0.45, 'rgba(8,18,44,0.88)');
-  g.addColorStop(1, 'rgba(8,18,44,1)');
-  ctx.fillStyle = g;
-  ctx.fillRect(0, H*0.45, W, H - H*0.45);
-  drawPageBadge(28, 28, state.pageName, currentAvatar());
-  const lineY = Math.round(H*0.915), lineX = Math.round(W*0.10);
-  const fit = fitText(upperWords(), W-120, H*0.27, state.font, 92, 44, 1.1);
-  const totalH = fit.lines.length * fit.lineH;
-  const startY = lineY - 50 - totalH + fit.lineH*0.82;
-  withHeadlineAnim(()=>{
-    ctx.save();
-    ctx.shadowColor = 'rgba(0,0,0,0.45)'; ctx.shadowBlur = 8;
-    drawWordLines(fit.lines, fit.font, W/2, startY, fit.lineH, 'center', state.headlineColor, state.highlightColor);
-    ctx.restore();
-  });
-  const lg = ctx.createLinearGradient(lineX, 0, W-lineX, 0);
-  lg.addColorStop(0, '#2d8cf0'); lg.addColorStop(1, '#f5a000');
-  ctx.strokeStyle = lg; ctx.lineWidth = 5; ctx.lineCap = 'round';
-  ctx.beginPath(); ctx.moveTo(lineX, lineY); ctx.lineTo(W-lineX, lineY); ctx.stroke();
-  ctx.lineCap = 'butt';
-}
-
-// Template 19: Red tag + big caps headline + YES (blue thumb) / NO (red heart) pills
-function drawTemplate19(){
-  const imgH = getImgH();
-  ctx.fillStyle = '#000000';
-  ctx.fillRect(0, 0, W, H);
-  drawImageOrPlaceholder(imgH);
-  const g = ctx.createLinearGradient(0, imgH - H*0.30, 0, imgH);
-  g.addColorStop(0, 'rgba(0,0,0,0)'); g.addColorStop(1, 'rgba(0,0,0,1)');
-  ctx.fillStyle = g;
-  ctx.fillRect(0, imgH - H*0.30, W, H*0.30);
-  ctx.fillStyle = '#000000';
-  ctx.fillRect(0, imgH, W, H - imgH);
-  drawPageBadge(28, 28, state.pageName, currentAvatar());
-
-  const padX = 40, gap = 24, margin = 34;
-  const pillH = Math.round(H*0.075);
-  const pillY = H - margin - pillH;
-  const pillW = (W - padX*2 - gap) / 2;
-
-  const tagH = 50;
-  const fit = fitText(upperWords(), W-80, H*0.30, state.font, 96, 44, 1.04);
-  const totalH = fit.lines.length * fit.lineH;
-  const headBottom = pillY - 34;
-  const startY = headBottom - totalH + fit.lineH*0.82;
-  const tagText = (state.tag || '').trim().toUpperCase();
-  withHeadlineAnim(()=>{
-    if(tagText){
-      ctx.font = fontStr('inter', 800, 26);
-      const tw = ctx.measureText(tagText).width;
-      const bw = tw + 44;
-      const by = startY - fit.lineH*0.82 - 18 - tagH;
-      ctx.fillStyle = '#d3201a';
-      ctx.fillRect(W/2 - bw/2, by, bw, tagH);
-      ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 2;
-      ctx.strokeRect(W/2 - bw/2, by, bw, tagH);
-      ctx.fillStyle = '#ffffff'; ctx.textAlign = 'center';
-      ctx.fillText(tagText, W/2, by + tagH/2 + 9);
-    }
-    ctx.save();
-    ctx.shadowColor = 'rgba(0,0,0,0.6)'; ctx.shadowBlur = 10;
-    drawWordLines(fit.lines, fit.font, W/2, startY, fit.lineH, 'center', state.headlineColor, state.highlightColor);
-    ctx.restore();
-  });
-
-  const drawPillBtn = (x, color, path, label)=>{
-    ctx.save();
-    ctx.shadowColor = 'rgba(0,0,0,0.4)'; ctx.shadowBlur = 14; ctx.shadowOffsetY = 4;
-    ctx.fillStyle = color;
-    roundRect(x, pillY, pillW, pillH, pillH/2); ctx.fill();
-    ctx.restore();
-    ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 4;
-    roundRect(x, pillY, pillW, pillH, pillH/2); ctx.stroke();
-    const iconS = pillH*0.52, tSize = Math.round(pillH*0.50);
-    ctx.font = fontStr('anton', 800, tSize);
-    const lbl = cleanLabel(label).toUpperCase();
-    const tw = ctx.measureText(lbl).width;
-    const total = iconS + 16 + tw;
-    const sx = x + pillW/2 - total/2;
-    drawIconPath(path, sx + iconS/2, pillY + pillH/2, iconS, '#ffffff');
-    ctx.fillStyle = '#ffffff'; ctx.textAlign = 'left';
-    ctx.fillText(lbl, sx + iconS + 16, pillY + pillH/2 + tSize*0.35);
-  };
-  drawPillBtn(padX, '#1877f2', THUMB_PATH, state.btn1 || 'YES');
-  drawPillBtn(padX + pillW + gap, '#e53935', HEART_PATH, state.btn2 || 'NO');
-}
-
 let downloadsCap = null, sampleCap = null;
 (async ()=>{
   if(window.claude && typeof window.claude.use === 'function'){
@@ -1900,9 +1799,7 @@ const TEMPLATE_INFO = {
   '14': 'Tag + Line — full-bleed photo, coloured topic pill, big bold caps headline and a flag-coloured line at the bottom. Good for topic/issue questions (e.g. Brexit, immigration, economy).',
   '15': 'Flag Edge Caps — full-bleed photo, bold white caps headline with highlighted words at the bottom, flag-coloured side edges and a round flag logo top-right. Good for hard-hitting poll questions about citizenship, immigration or national issues.',
   '16': 'Split Quote — photo fading into black on the right, big yellow quote mark and white serif quote with the speaker name underneath. Good when the story is a direct quote from a named person.',
-  '17': 'Condensed Center — full-bleed photo, big condensed centred caps headline in white/red/yellow, short accent line, page name pill with logo top-right. Good for yes/no opinion questions on elections, voting and politics.',
-  '18': 'Navy Fade Line — full-bleed photo fading into deep navy at the bottom, centred bold caps headline with yellow highlights and a thin blue-to-orange line underneath. Good for serious opinion questions about citizenship, language, integration or national policy with a portrait/person photo.',
-  '19': 'Tag + Poll Pills — photo fading to black, small red tag, huge caps headline with yellow highlights, and two big pill buttons (blue thumbs-up YES / red heart NO). Good for yes/no poll questions about heritage, religion, culture or national identity that invite votes and comments.'
+  '17': 'Condensed Center — full-bleed photo, big condensed centred caps headline in white/red/yellow, short accent line, page name pill with logo top-right. Good for yes/no opinion questions on elections, voting and politics.'
 };
 
 suggestTemplateBtn.addEventListener('click', async ()=>{
@@ -2127,8 +2024,8 @@ function resetAll(){
   state.btn2 = '😆 NO';
   state.imgZoom = 1;
   state.imgPanX = 0;
-  state.photoRatio = { '1':78, '2':58, '3':52, '4':62, '5':56, '6':62, '7':100, '8':68, '9':76, '10':100, '11':78, '12':100, '13':100, '14':100, '15':100, '16':100, '17':100, '18':100, '19':72 };
-  state.textOffset = { '1':0,'2':0,'3':0,'4':0,'5':0,'6':0,'7':0,'8':0,'9':0,'10':0,'11':0,'12':0,'13':0,'14':0,'15':0,'16':0,'17':0,'18':0,'19':0 };
+  state.photoRatio = { '1':78, '2':58, '3':52, '4':62, '5':56, '6':62, '7':100, '8':68, '9':76, '10':100, '11':78, '12':100, '13':100, '14':100, '15':100, '16':100, '17':100 };
+  state.textOffset = { '1':0,'2':0,'3':0,'4':0,'5':0,'6':0,'7':0,'8':0,'9':0,'10':0,'11':0,'12':0,'13':0,'14':0,'15':0,'16':0,'17':0 };
 
   delete tagInput.dataset.touched_;
   delete fontSelect.dataset.touched_;
